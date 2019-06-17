@@ -58,12 +58,11 @@
         return color;
     }
 
-+ (NSImageView *)createIconInContentView:(NSView*)contentView frame:(NSRect)inFrame image:(NSImage*)image
++ (NSImageView *)createIconInContentView:(NSView*)contentView frame:(NSRect)inFrame
     {
         NSImageView* icon = [[NSImageView alloc] initWithFrame:inFrame];
         
         [contentView addSubview:icon];
-        [icon setImage:image];
         
         return icon;
     }

@@ -18,6 +18,8 @@
     + (NSPopUpButton *)createDropDownInContentView:(NSView*)contentView frame:(NSRect)inFrame state:(int)inState continuous:(BOOL)inCont tag:(int)tag slideNumber:(int)slideNumber;
     
     + (NSBox *)createColorBoxInContentView:(NSView*)contentView frame:(NSRect)inFrame;
+
+    + (NSImageView *)createIconInContentView:(NSView*)contentView frame:(NSRect)inFrame;
     
 @end
 

@@ -5,14 +5,14 @@
 --  Created by Rick McIlraith on 22/05/2019.
 --  Copyright © 2019 Rick McIlraith. All rights reserved.
 --
+--  Visual design specific version of the Review Log tool with just the design tab content from the main Review Log tool
 
+-- Top level script that houses the entire application
 script AppDelegate
     
 	property parent : class "NSObject"
     
     property button : missing value
-    
-    property NSColor : class "NSColor"
     
     property NSImage : class "NSImage"
     
@@ -30,25 +30,7 @@ script AppDelegate
 		return current application's NSTerminateNow
 	end applicationShouldTerminate_
     
-    script SetColor
-        
-        on changeColor(colorOption, popUpButtonOption)
-            
-            if popUpButtonOption is 0
-                colorOption's setFillColor_(NSColor's redColor())
-                colorOption's setBorderColor_(NSColor's redColor())
-            else if popUpButtonOption is 1
-                colorOption's setFillColor_(NSColor's orangeColor())
-                colorOption's setBorderColor_(NSColor's orangeColor())
-            else if popUpButtonOption is 2
-                colorOption's setFillColor_(NSColor's greenColor())
-                colorOption's setBorderColor_(NSColor's greenColor())
-            end if
-        
-        end changeColor
-    
-    end script
-
+    -- Change the icon associated to the status of the amend
     script SetIcon
         
         on changeIcon(optionIcon, popUpButtonOption)
@@ -68,14 +50,11 @@ script AppDelegate
         end changeIcon
 
     end script
-    
+
+    -- Create a row of items: Jump to button, icon, status drop down, edit comment
     script CreatePageInstance
         
         property message : "loaded"
-        
-#        property colorOption : class "NSColor"
-#
-#        property colorList : {}
 
         property optionIcon : class "NSImage"
         
@@ -86,15 +65,10 @@ script AppDelegate
             log message
             
             set statusNumber to statusNumber as integer
-
-#            set colorOption to createButton's createColorBoxInContentView_frame_(contentView, {{96, (position - 4)}, {236, 30}})
-#
-#            SetColor's changeColor(colorOption, (statusNumber-1))
-#
-#            copy colorOption to the end of colorList
-
+            
             set dropDownButton to createButton's createDropDownInContentView_frame_state_continuous_tag_slideNumber_(contentView, {{120, position}, {230, 20}}, 0, true, tag, powerpointSlide)
             
+            -- Set status drop down initial position
             dropDownButton's selectItemAtIndex_(statusNumber-1)
 
             tell dropDownButton to setTarget:me
@@ -105,12 +79,12 @@ script AppDelegate
             tell jumpToButton to setTarget:me
             tell jumpToButton to setAction:"jumpToAction:"
 
-            set img to NSImage's imageNamed:"blank"
-
-            set iconImage to createButton's createIconInContentView_frame_image_(contentView, {{90, (position - 3)}, {30, 30}}, img)
+            set iconImage to createButton's createIconInContentView_frame_(contentView, {{90, (position - 3)}, {30, 30}})
             
+            -- Set initial icon state
             SetIcon's changeIcon(iconImage, statusNumber-1)
             
+            -- Store icons in a list so can be referenced in status drop down action
             copy iconImage to end of iconList
 
         end create
@@ -120,14 +94,9 @@ script AppDelegate
     on popAction_(sender)
         
         set selectedOption to sender's indexOfSelectedItem()
-#        set colorOptionsList to CreatePageInstance's colorList
         set iconImageList to CreatePageInstance's iconList
         set popUpButtonNumber to sender's tag
         set slideNumber to sender's accessibilityIndex
-
-#        set currentColorOption to item popUpButtonNumber of colorOptionsList
-#
-#        SetColor's changeColor(currentColorOption, selectedOption)
 
         set currentImageIcon to item popUpButtonNumber of iconImageList
 
