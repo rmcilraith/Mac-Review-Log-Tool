@@ -11,15 +11,12 @@
 script AppDelegate
     
 	property parent : class "NSObject"
-    
-    property button : missing value
-    
-    property NSImage : class "NSImage"
-    
     property createButton : class "CreateButton"
-
-	-- IBOutlets
-	property theWindow : class "NSWindow"
+    property NSImage : class "NSImage"
+    property button : missing value
+	property theWindow : missing value
+    property commentsWindow : missing value
+    property internalCommentsTextField : missing value
 	
 	on applicationWillFinishLaunching_(aNotification)
         -- Insert code here to initialize your application before any files are opened
@@ -66,19 +63,11 @@ script AppDelegate
             
             set statusNumber to statusNumber as integer
             
-            set dropDownButton to createButton's createDropDownInContentView_frame_state_continuous_tag_slideNumber_(contentView, {{120, position}, {230, 20}}, 0, true, tag, powerpointSlide)
-            
-            -- Set status drop down initial position
-            dropDownButton's selectItemAtIndex_(statusNumber-1)
-
-            tell dropDownButton to setTarget:me
-            tell dropDownButton to setAction:"popAction:"
-            
             set jumpToButton to createButton's createButtonInContentView_frame_state_continuous_title_tag_(contentView, {{10, (position-3)}, {80, 25}}, 0, true, "Slide " & powerpointSlide, powerpointSlide)
             
             tell jumpToButton to setTarget:me
             tell jumpToButton to setAction:"jumpToAction:"
-
+            
             set iconImage to createButton's createIconInContentView_frame_(contentView, {{90, (position - 3)}, {30, 30}})
             
             -- Set initial icon state
@@ -86,12 +75,39 @@ script AppDelegate
             
             -- Store icons in a list so can be referenced in status drop down action
             copy iconImage to end of iconList
+            
+            set dropDownButton to createButton's createDropDownInContentView_frame_state_continuous_tag_slideNumber_(contentView, {{120, position}, {230, 20}}, 0, true, tag, powerpointSlide)
+            
+            -- Set status drop down initial selected item
+            dropDownButton's selectItemAtIndex_(statusNumber-1)
+
+            tell dropDownButton to setTarget:me
+            tell dropDownButton to setAction:"dropDownAction:"
+            
+            set editCommentButton to createButton's createButtonInContentView_frame_state_continuous_title_tag_(contentView, {{350, (position-3)}, {120, 25}}, 0, true, "Edit comment", powerpointSlide)
+            
+            tell editCommentButton to setTarget:me
+            tell editCommentButton to setAction:"editCommentAction:"
 
         end create
 
     end script
+
+    on jumpToAction_(sender)
+        
+        set slideNumber to sender's tag
+        set intSlideNumber to slideNumber as integer
+        
+        tell application "Microsoft PowerPoint"
+            tell active presentation
+                set theView to view of document window 1
+                go to slide theView number intSlideNumber
+            end tell
+        end tell
+        
+    end jumpToAction_
     
-    on popAction_(sender)
+    on dropDownAction_(sender)
         
         set selectedOption to sender's indexOfSelectedItem()
         set iconImageList to CreatePageInstance's iconList
@@ -116,34 +132,36 @@ script AppDelegate
             end tell
         end tell
 
-    end popAction_
+    end dropDownAction_
 
-    on jumpToAction_(sender)
+    on editCommentAction_(sender)
         
-        set slideNumber to sender's tag
-        set intSlideNumber to slideNumber as integer
-        
+        set slideNumber to sender's tag as integer
+
         tell application "Microsoft PowerPoint"
-            tell active presentation
-                set theView to view of document window 1
-                go to slide theView number intSlideNumber
+            tell slide slideNumber of active presentation
+                repeat with shapeNumber from 1 to count of shapes
+                    if name of shape shapeNumber is "internalComments"
+                        set currentComment to content of text range of text frame of shape shapeNumber
+                    end if
+                end repeat
             end tell
         end tell
-        
-    end jumpToAction_
-    
+
+        tell me to activate
+        commentsWindow's makeKeyAndOrderFront_(me)
+
+        -- Set the text field content to what is currently in the powerpoint
+        internalCommentsTextField's setString:currentComment
+
+        -- 'button' is a property of the script used by most buttons - including the save button in the comments window, this is set here to be referenced in the save button's action handler
+        button's setTag:slideNumber
+
+    end editCommentAction_
+
     on buttonClicked_(sender)
-#        tell application "Microsoft PowerPoint"
-#            tell slide 1 of active presentation
-#                repeat with shapeNumber from 1 to count of shapes
-#                    if name of shape shapeNumber is "internalComments"
-#                -- set myVariable to get name of text range of text frame of shape 1
-#                        set myVariable to content of text range of text frame of shape shapeNumber
-#                        display dialog myVariable
-#                    end if
-#                end repeat
-#            end tell
-#        end tell
+        
+# Use this button for testing
 
     end buttonClicked_
 
@@ -177,5 +195,28 @@ script AppDelegate
 #        button's removeFromSuperview()
 
     end newButtonClicked_
+
+    on saveButtonClicked_(sender)
+        
+        set slideNumber to sender's tag as integer
+        
+        set textStorage to internalCommentsTextField's textStorage()
+        set theText to textStorage's |string|()
+        
+        set currentText to theText as string
+        
+        tell application "Microsoft PowerPoint"
+            tell active presentation
+                tell slide slideNumber
+                    repeat with shapeNumber from 1 to count of shapes
+                        if name of shape shapeNumber is "internalComments"
+                            set content of text range of text frame of shape shapeNumber to currentText
+                        end if
+                    end repeat
+                end tell
+            end tell
+        end tell
+        
+    end saveButtonClicked_
 
 end script
