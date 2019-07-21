@@ -13,19 +13,19 @@
 @implementation CreateButton
 
 + (NSButton *)createButtonInContentView:(NSView*)contentView frame:(NSRect)inFrame state:(int)inState continuous:(BOOL)inCont title:(NSString*)title tag:(int)tag
-{
-    NSButton* button = [[NSButton alloc] initWithFrame:inFrame];
-    [button setContinuous:inCont];
-    [button setState:inState];
-    [button setTitle:title];
-    [button setTag:tag];
-    [button setButtonType:NSButtonTypeToggle];
-    [button setBezelStyle:NSBezelStyleRounded];
-    
-    [contentView addSubview:button];
+    {
+        NSButton* button = [[NSButton alloc] initWithFrame:inFrame];
+        [button setContinuous:inCont];
+        [button setState:inState];
+        [button setTitle:title];
+        [button setTag:tag];
+        [button setButtonType:NSButtonTypeToggle];
+        [button setBezelStyle:NSBezelStyleRounded];
+        
+        [contentView addSubview:button];
 
-    return button;
-}
+        return button;
+    }
     
 + (NSPopUpButton *)createDropDownInContentView:(NSView*)contentView frame:(NSRect)inFrame state:(int)inState continuous:(BOOL)inCont tag:(int)tag slideNumber:(int)slideNumber
     {

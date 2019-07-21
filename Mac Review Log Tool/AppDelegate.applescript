@@ -17,6 +17,7 @@ script AppDelegate
 	property theWindow : missing value
     property commentsWindow : missing value
     property internalCommentsTextField : missing value
+    property externalCommentsTextField : missing value
 	
 	on applicationWillFinishLaunching_(aNotification)
         -- Insert code here to initialize your application before any files are opened
@@ -56,6 +57,7 @@ script AppDelegate
         property optionIcon : class "NSImage"
         
         property iconList : {}
+        property dropDownList : {}
         
         on create(contentView, position, tag, statusNumber, powerpointSlide)
         
@@ -80,6 +82,9 @@ script AppDelegate
             
             -- Set status drop down initial selected item
             dropDownButton's selectItemAtIndex_(statusNumber-1)
+            
+            -- Store drop downs in a list so can be referenced in QAd checkbox action
+            copy dropDownButton to end of dropDownList
 
             tell dropDownButton to setTarget:me
             tell dropDownButton to setAction:"dropDownAction:"
@@ -88,6 +93,14 @@ script AppDelegate
             
             tell editCommentButton to setTarget:me
             tell editCommentButton to setAction:"editCommentAction:"
+            
+            set QAdButton to createButton's createButtonInContentView_frame_state_continuous_title_tag_(contentView, {{470, (position-3)}, {80, 25}}, 0, true, "QA'd", tag)
+            
+            -- Set button type to 'switch' (enum case 3)
+            QAdButton's setButtonType:3
+            
+            tell QAdButton to setTarget:me
+            tell QAdButton to setAction:"QAdAction:"
 
         end create
 
@@ -142,7 +155,9 @@ script AppDelegate
             tell slide slideNumber of active presentation
                 repeat with shapeNumber from 1 to count of shapes
                     if name of shape shapeNumber is "internalComments"
-                        set currentComment to content of text range of text frame of shape shapeNumber
+                        set currentInternalComment to content of text range of text frame of shape shapeNumber
+                    else if name of shape shapeNumber is "externalComments"
+                        set currentExternalComment to content of text range of text frame of shape shapeNumber
                     end if
                 end repeat
             end tell
@@ -152,12 +167,28 @@ script AppDelegate
         commentsWindow's makeKeyAndOrderFront_(me)
 
         -- Set the text field content to what is currently in the powerpoint
-        internalCommentsTextField's setString:currentComment
+        internalCommentsTextField's setString:currentInternalComment
+        externalCommentsTextField's setString:currentExternalComment
 
         -- 'button' is a property of the script used by most buttons - including the save button in the comments window, this is set here to be referenced in the save button's action handler
         button's setTag:slideNumber
 
     end editCommentAction_
+
+    on QAdAction_(sender)
+        
+        set listofDropDowns to CreatePageInstance's dropDownList
+        set chosenCheckBox to sender's tag as integer
+        set itemChosen to item chosenCheckBox of listofDropDowns
+        set buttonState to sender's state as integer
+        
+        if (buttonState = 0)
+            itemChosen's setEnabled:true
+        else if (buttonState = 1)
+            itemChosen's setEnabled:false
+        end if
+
+    end QAdAction_
 
     on buttonClicked_(sender)
         
@@ -200,17 +231,24 @@ script AppDelegate
         
         set slideNumber to sender's tag as integer
         
-        set textStorage to internalCommentsTextField's textStorage()
-        set theText to textStorage's |string|()
+        set internalCommentsTextStorage to internalCommentsTextField's textStorage()
+        set internalCommentText to internalCommentsTextStorage's |string|()
         
-        set currentText to theText as string
+        set currentInternalCommentText to internalCommentText as string
+        
+        set externalCommentsTextStorage to externalCommentsTextField's textStorage()
+        set externalCommentText to externalCommentsTextStorage's |string|()
+        
+        set currentExternalCommentText to externalCommentText as string
         
         tell application "Microsoft PowerPoint"
             tell active presentation
                 tell slide slideNumber
                     repeat with shapeNumber from 1 to count of shapes
                         if name of shape shapeNumber is "internalComments"
-                            set content of text range of text frame of shape shapeNumber to currentText
+                            set content of text range of text frame of shape shapeNumber to currentInternalCommentText
+                        else if name of shape shapeNumber is "externalComments"
+                            set content of text range of text frame of shape shapeNumber to currentExternalCommentText
                         end if
                     end repeat
                 end tell
