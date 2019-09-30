@@ -20,7 +20,7 @@
     + (NSBox *)createColorBoxInContentView:(NSView*)contentView frame:(NSRect)inFrame;
 
     + (NSImageView *)createIconInContentView:(NSView*)contentView frame:(NSRect)inFrame;
-    
++ (NSTextField *)createTextFieldInContentView:(NSView*)contentView frame:(NSRect)inFrame  del:(id<NSTextFieldDelegate>)myDelegate;
 @end
 
 

@@ -31,7 +31,7 @@
     {
         NSPopUpButton* popButton = [[NSPopUpButton alloc] initWithFrame:inFrame];
         [popButton setContinuous:inCont];
-        [popButton addItemsWithTitles:@[@"Requires Attention",@"Amended", @"QA'd"]];
+        [popButton addItemsWithTitles:@[@"Amend required",@"Clarification required", @"Awaiting content", @"Amended"]];
         [popButton setState:inState];
         [popButton setTag:tag];
         [popButton setAccessibilityIndex:slideNumber];
@@ -65,6 +65,16 @@
         [contentView addSubview:icon];
         
         return icon;
+    }
+
++ (NSTextField *)createTextFieldInContentView:(NSView*)contentView frame:(NSRect)inFrame del:(id<NSTextFieldDelegate>)myDelegate
+    {
+        NSTextField* textField = [[NSTextField alloc] initWithFrame:inFrame];
+        NSLog(@"My delegate: %@", myDelegate);
+        [textField setDelegate:myDelegate];
+        [contentView addSubview:textField];
+        
+        return textField;
     }
     
 @end

@@ -781,7 +781,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="250" height="230"/>
+                                    <size key="minSize" width="235" height="230"/>
                                     <size key="maxSize" width="265" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -790,7 +790,7 @@
                         </clipView>
                         <edgeInsets key="contentInsets" left="5" right="10" top="10" bottom="10"/>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="RXo-rr-5k6">
-                            <rect key="frame" x="240" y="10" width="15" height="230"/>
+                            <rect key="frame" x="239" y="10" width="16" height="230"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -806,7 +806,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="250" height="230"/>
+                                    <size key="minSize" width="235" height="230"/>
                                     <size key="maxSize" width="265" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -815,7 +815,7 @@
                         </clipView>
                         <edgeInsets key="contentInsets" left="5" right="10" top="10" bottom="10"/>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="uiv-p0-CyS">
-                            <rect key="frame" x="240" y="10" width="15" height="230"/>
+                            <rect key="frame" x="239" y="10" width="16" height="230"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>

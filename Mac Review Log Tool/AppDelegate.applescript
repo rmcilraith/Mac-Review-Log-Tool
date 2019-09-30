@@ -20,6 +20,10 @@ script AppDelegate
     property externalCommentsTextField : missing value
 	
 	on applicationWillFinishLaunching_(aNotification)
+       log aNotification's object()
+       set myApp to aNotification's object()
+#       set nc to myApp's NotificationCenter
+       log NotificationCenter's default
         -- Insert code here to initialize your application before any files are opened
 	end applicationWillFinishLaunching_
 	
@@ -33,16 +37,22 @@ script AppDelegate
         
         on changeIcon(optionIcon, popUpButtonOption)
             
-            set cross to NSImage's imageNamed:"cross"
-            set exclamation to NSImage's imageNamed:"exclamation"
-            set tick to NSImage's imageNamed:"tick"
-            
+            set cone to NSImage's imageNamed:"support"
+            set exclamation to NSImage's imageNamed:"exclamationo"
+            set hourglass to NSImage's imageNamed:"hourglass"
+            set tickBlue to NSImage's imageNamed:"tick_light_blue"
+            set tickGreen to NSImage's imageNamed:"accept_button"
+
             if popUpButtonOption is 0
-                optionIcon's setImage:cross
-            else if popUpButtonOption is 1
                 optionIcon's setImage:exclamation
+            else if popUpButtonOption is 1
+                optionIcon's setImage:cone
             else if popUpButtonOption is 2
-                optionIcon's setImage:tick
+                optionIcon's setImage:hourglass
+            else if popUpButtonOption is 3
+                optionIcon's setImage:tickBlue
+            else if popUpButtonOption is 4
+                optionIcon's setImage:tickGreen
             end if
         
         end changeIcon
@@ -58,6 +68,7 @@ script AppDelegate
         
         property iconList : {}
         property dropDownList : {}
+        property checkboxList : {}
         
         on create(contentView, position, tag, statusNumber, powerpointSlide)
         
@@ -99,12 +110,41 @@ script AppDelegate
             -- Set button type to 'switch' (enum case 3)
             QAdButton's setButtonType:3
             
+            copy QAdButton to end of checkboxList
+            
+            if statusNumber < 4
+                QAdButton's setEnabled:false
+            end if
+            
             tell QAdButton to setTarget:me
             tell QAdButton to setAction:"QAdAction:"
+            
+            set timeTextField to createButton's createTextFieldInContentView_frame_del_(contentView, {{525, (position-3)}, {40, 25}}, me)
+            tell timeTextField to setDelegate: me
+            
+#            tell timeTextField to setDelegate:me
+#            log NotificationCenter
+#            tell NotificationCenter's
+
+#            tell timeTextField to setAction:"timeTextFieldAction:"
 
         end create
 
     end script
+
+#    on controlTextDidChange_(aNotification)
+#
+#        log aNotification's object()
+#
+#    end controlTextDidChange_
+
+    on textDidChange_(aNotification)
+
+        log aNotification's object()
+
+    end textDidChange_
+
+#    on timeTextFieldAction
 
     on jumpToAction_(sender)
         
@@ -124,10 +164,20 @@ script AppDelegate
         
         set selectedOption to sender's indexOfSelectedItem()
         set iconImageList to CreatePageInstance's iconList
+        set listofCheckboxes to CreatePageInstance's checkboxList
         set popUpButtonNumber to sender's tag
         set slideNumber to sender's accessibilityIndex
 
         set currentImageIcon to item popUpButtonNumber of iconImageList
+        set currentCheckbox to item popUpButtonNumber of listofCheckboxes
+        
+        log selectedOption
+        
+        if selectedOption < 3
+            currentCheckbox's setEnabled:false
+        else if selectedOption <= 3
+            currentCheckbox's setEnabled:true
+        end if
 
         SetIcon's changeIcon(currentImageIcon, selectedOption)
 
@@ -182,10 +232,15 @@ script AppDelegate
         set itemChosen to item chosenCheckBox of listofDropDowns
         set buttonState to sender's state as integer
         
+        set iconImageList to CreatePageInstance's iconList
+        set currentImageIcon to item chosenCheckBox of iconImageList
+        
         if (buttonState = 0)
             itemChosen's setEnabled:true
+            SetIcon's changeIcon(currentImageIcon, 3)
         else if (buttonState = 1)
             itemChosen's setEnabled:false
+            SetIcon's changeIcon(currentImageIcon, 4)
         end if
 
     end QAdAction_
