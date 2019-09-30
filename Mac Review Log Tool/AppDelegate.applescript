@@ -19,11 +19,9 @@ script AppDelegate
     property internalCommentsTextField : missing value
     property externalCommentsTextField : missing value
     property testTextField : missing value
-    global test
 	
 	on applicationWillFinishLaunching_(aNotification)
        log aNotification's object()
-       set test to aNotification's object
         -- Insert code here to initialize your application before any files are opened
 	end applicationWillFinishLaunching_
 	
