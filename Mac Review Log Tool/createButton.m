@@ -70,8 +70,8 @@
 + (NSTextField *)createTextFieldInContentView:(NSView*)contentView frame:(NSRect)inFrame del:(id<NSTextFieldDelegate>)myDelegate
     {
         NSTextField* textField = [[NSTextField alloc] initWithFrame:inFrame];
-        NSLog(@"My delegate: %@", myDelegate);
         [textField setDelegate:myDelegate];
+        NSLog(@"My delegate: %@", myDelegate);
         [contentView addSubview:textField];
         
         return textField;

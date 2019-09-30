@@ -18,12 +18,12 @@ script AppDelegate
     property commentsWindow : missing value
     property internalCommentsTextField : missing value
     property externalCommentsTextField : missing value
+    property testTextField : missing value
+    global test
 	
 	on applicationWillFinishLaunching_(aNotification)
        log aNotification's object()
-       set myApp to aNotification's object()
-#       set nc to myApp's NotificationCenter
-       log NotificationCenter's default
+       set test to aNotification's object
         -- Insert code here to initialize your application before any files are opened
 	end applicationWillFinishLaunching_
 	
@@ -120,31 +120,26 @@ script AppDelegate
             tell QAdButton to setAction:"QAdAction:"
             
             set timeTextField to createButton's createTextFieldInContentView_frame_del_(contentView, {{525, (position-3)}, {40, 25}}, me)
-            tell timeTextField to setDelegate: me
             
-#            tell timeTextField to setDelegate:me
-#            log NotificationCenter
-#            tell NotificationCenter's
-
-#            tell timeTextField to setAction:"timeTextFieldAction:"
+            tell timeTextField to setTarget:me
+            tell timeTextField to setAction:"timeTextFieldAction:"
 
         end create
 
     end script
 
-#    on controlTextDidChange_(aNotification)
-#
-#        log aNotification's object()
-#
-#    end controlTextDidChange_
+    on controlTextDidEndEditing_(aNotification)
 
-    on textDidChange_(aNotification)
+        log "Hola"
+        log aNotification's object
 
-        log aNotification's object()
+    end controlTextDidEndEditing_
 
-    end textDidChange_
-
-#    on timeTextFieldAction
+    on timeTextFieldAction_(sender)
+        
+        log "bueno"
+        
+    end timeTextFieldAction_
 
     on jumpToAction_(sender)
         
